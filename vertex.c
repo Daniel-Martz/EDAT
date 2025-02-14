@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define TAG_LENGTH 64
 
 struct _Vertex {
     long id;
