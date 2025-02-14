@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TAG_LENGTH 64
+
 /** 
  * @brief Label to characterize the vertex state (to be used in P2)
  *
