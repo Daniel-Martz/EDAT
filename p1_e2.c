@@ -7,6 +7,7 @@ int main()
     Graph *g = NULL;
     int i;
     long *arrar_aux = NULL;
+    
     /*creation of auxiliars constants*/
     long id1 = 111, id2 = 222;
     char tag1[] = "Madrid", tag2[] = "Toledo";

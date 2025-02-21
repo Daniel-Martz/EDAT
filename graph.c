@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define MAX_VTX 4096
+#define MAX_TAM 100
 
 struct _Graph
 {
@@ -172,18 +173,6 @@ int graph_print(FILE *pf, const Graph *g)
     return chars_written;
 }
 
-/**
- * @brief Creates an edge between to vertices of a graph.
- *
- * If any of the two vertices does not exist in the graph the edge is
- * not created.
- *
- * @param g Pointer to the graph.
- * @param orig ID of the origin vertex.
- * @param dest ID of the destination vertex.
- *
- * @return OK if the edge could be added to the graph, ERROR otherwise.
- **/
 Status graph_newEdge(Graph *g, long orig, long dest)
 {
 
@@ -222,15 +211,6 @@ Status graph_newEdge(Graph *g, long orig, long dest)
     return OK;
 }
 
-
-/**
- * @brief Returns the total number of edges  * in the graph.
- *
- * @param g Pointer to the graph.
- *
- * @return Returns The number of vertices in the graph, or -1 if
- * there is any error.
- **/
 int graph_getNumberOfEdges(const Graph *g)
 {
 
@@ -252,16 +232,6 @@ int graph_getNumberOfEdges(const Graph *g)
     return num_con;
 }
 
-/**
- * @brief Determines if there is a connection between a pair of vertices.
- *
- * @param g Pointer to the graph.
- * @param orig ID of the origin vertex.
- * @param dest ID of the destination vertex.
- *
- * @return Returns TRUE if there is a connection in g from orig
- *  to dest, FALSE otherwise.
- **/
 Bool graph_connectionExists(const Graph *g, long orig, long dest)
 {
 
@@ -303,18 +273,6 @@ Bool graph_connectionExists(const Graph *g, long orig, long dest)
     return FALSE;
 }
 
-/**
- * @brief Returns an array with the ids of all the vertices which a
- * given vertex connects to.
- *
- * This function allocates memory for the array.
- *
- * @param g Pointer to the graph.
- * @param id ID of the origin vertex.
- *
- * @return Returns an array with the ids of all the vertices to which
- * the vertex with ID id is connected, or NULL if there is any error.
- */
 long *graph_getConnectionsFromId(const Graph *g, long id)
 {
 
@@ -361,15 +319,6 @@ long *graph_getConnectionsFromId(const Graph *g, long id)
     return conec;
 }
 
-/**
- * @brief Gets the number of connections starting at a given vertex.
- *
- * @param g Pointer to the graph.
- * @param tag Tag of the origin vertex.
- *
- * @return Returns the total number of connections starting at
- * vertex with Tag tag, or -1 if there is any error.
- **/
 int graph_getNumberOfConnectionsFromTag(const Graph *g, char *tag)
 {
 
@@ -400,18 +349,6 @@ int graph_getNumberOfConnectionsFromTag(const Graph *g, char *tag)
     return count;
 }
 
-/**
- * @brief Returns an array with the ids of all the vertices which a
- * given vertex connects to.
- *
- * This function allocates memory for the array.
- *
- * @param g Pointer to the graph.
- * @param tag Tag of the origin vertex.
- *
- * @return Returns an array with the ids of all the vertices to which
- * the vertex with Tag tag is connected, or NULL if there is any error.
- */
 long *graph_getConnectionsFromTag(const Graph *g, char *tag)
 {
 
@@ -458,65 +395,41 @@ long *graph_getConnectionsFromTag(const Graph *g, char *tag)
     return conec;
 }
 
-/**
- * @brief Reads a graph definition from a text file.
- *
- * Reads a graph description from the text file pointed to by fin,
- * and fills the graph g.
- *
- * The first line in the file contains the number of vertices.
- * Then one line per vertex with the vertex description.
- * Finally one line per connection, with the ids of the origin and
- * the destination.
- *
- * For example:
- *
- * 4
- * id:1 tag:Madrid
- * id:2 tag:Toledo
- * id:3 tag:Avila
- * id:4 tag:Segovia
- * 1 2
- * 1 3
- * 2 4
- * 4 3
- *
- * @param fin Pointer to the input stream.
- * @param g Pointer to the graph.
- *
- * @return OK or ERROR
- */
 Status graph_readFromFile(FILE *fin, Graph *g)
 {
-
-    int i, in1aux, in2aux;
-    char tagaux[TAG_LENGTH];
+    int i, in1aux, in2aux, j;
+    long pos1, pos2;
+    char descrip[MAX_TAM];
 
     if (!fin || !g)
     {
         return ERROR;
     }
 
-    if (fscanf(fin, "%i", &g->num_vertices) != 1)
-    {
-        return ERROR;
-    }
+    while (fscanf(fin, "%i \n", &g->num_vertices) == 2);
 
     for (i = 0; i < g->num_vertices; i++)
     {
-        fgets(tagaux, TAG_LENGTH, fin);
-        g->vertices[i] = vertex_initFromString(tagaux);
+        fgets(descrip, MAX_TAM, fin);
+        g->vertices[i] = vertex_initFromString(descrip);
     }
 
     while (fscanf(fin, "%i %i", &in1aux, &in2aux) == 2)
     {
-        if ((in1aux >= MAX_VTX) || (in2aux >= MAX_VTX))
+        for (j=0; j<g->num_vertices; j++)
         {
-            return ERROR;
+            if (in1aux == vertex_getId(g->vertices[j]))
+            {
+                pos1 = j;
+            }
+
+            if (in2aux == vertex_getId(g->vertices[j]))
+            {
+                pos2 = j;
+            }
         }
-        g->connections[in1aux][in2aux] = TRUE;
+        g->connections[pos1][pos2] = TRUE;
     }
     return OK;
 }
 
-/* CUIDADO CON LAS FUNCIONES GET CONECTIONSFROMTAG Y LA DE ID, QUE NO SE LIBERA MEMORIA*/

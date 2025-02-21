@@ -130,7 +130,10 @@ int vertex_print(FILE *pf, const void *v) {
     int total_chars = 0;
     Vertex *w;
 
-    if (pf == NULL || v == NULL) return -1;
+    if (pf == NULL || v == NULL)
+    {
+        return -1;
+    }
 
     w = (Vertex *)v;
     total_chars = fprintf(pf, "[%ld, %s, %d]", w->id, w->tag, w->state);
