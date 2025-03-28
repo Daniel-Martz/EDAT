@@ -8,6 +8,7 @@ struct _Vertex {
     long id;
     char tag[TAG_LENGTH];
     Label state;
+    int  index;
 };
 
 Status vertex_setField(Vertex *v, char *key, char *value) {
@@ -32,6 +33,7 @@ Vertex *vertex_init() {
     v->id = 0;
     strcpy(v->tag, "");
     v->state = WHITE;
+    v->index = 0;
     return v;
 }
 
@@ -98,6 +100,22 @@ Status vertex_setTag(Vertex *v, const char *tag) {
     return OK;
 }
 
+Status vertex_setIndex(Vertex *v, const int ind){
+    if(v == NULL || (ind < 0)){
+        return ERROR;
+    }
+    v->index = ind;
+    return OK;
+}   
+
+int vertex_getIndex(Vertex *v){
+    if (v== NULL)
+    {
+    return -1;
+    }
+    return v->index;
+}
+
 Status vertex_setState(Vertex *v, const Label state) {
     if (v == NULL) return ERROR;
     v->state = state;
@@ -122,6 +140,7 @@ void *vertex_copy(const void *src) {
     trg->id = srd->id;
     trg->state = srd->state;
     strcpy(trg->tag, srd->tag);
+    trg->index = srd->index;
 
     return trg;
 }
@@ -136,7 +155,8 @@ int vertex_print(FILE *pf, const void *v) {
     }
 
     w = (Vertex *)v;
-    total_chars = fprintf(pf, "[%ld, %s, %d]", w->id, w->tag, w->state);
+    total_chars = fprintf(pf, "[%ld, %s, %d, %d]", w->id, w->tag, w->state, w->index);
     
     return total_chars;
 }
+

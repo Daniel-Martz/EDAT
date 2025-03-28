@@ -221,4 +221,10 @@ void * vertex_copy (const void * src);
  */
 int vertex_print (FILE * pf, const void * v);
 
+
+
+Status vertex_setIndex(Vertex *v, const int ind);
+
+int vertex_getIndex(Vertex *v);
+
 #endif /* VERTEX_H_ */
