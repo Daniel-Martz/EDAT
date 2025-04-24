@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 {
     FILE *entrada = NULL, *salida = NULL;
     char frase[TAM];
-    char *f;
+    char *linea = NULL, *p = NULL;
     SearchQueue *s = NULL;
     P_ele_print print = string_print;
     P_ele_cmp cmp = string_cmp;
@@ -40,11 +40,30 @@ int main(int argc, char **argv)
     s = search_queue_new(print, cmp);
     if (s == NULL)
     {
-        fclose(entrada); 
-        flcose(salida);
+        fclose(entrada);
+        fclose(salida);
         return -1;
     }
 
-    while(fgets(frase, TAM, entrada))
+    while (fgets(frase, TAM, entrada))
+    {
+        frase[strcspn(frase, "\n")] = '\0';
+        if (frase[0] != '\0')
+        {
+            p = str2chr(frase);
+            search_queue_push(s, p);
+        }
+    }
+
+    while (!search_queue_isEmpty(s))
+    {
+        linea = (char *)search_queue_pop(s);
+        fprintf(salida, "%s\n", linea);
+    }
+
+    search_queue_free(s);
+
+    fclose(entrada);
+    fclose(salida);
     return 0;
 }

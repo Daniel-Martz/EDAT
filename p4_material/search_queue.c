@@ -37,7 +37,7 @@ SearchQueue *search_queue_new(P_ele_print print_ele, P_ele_cmp cmp_ele)
 
 void search_queue_free(SearchQueue *q)
 {
-    if (q = NULL)
+    if (q == NULL)
     {
         return;
     }
