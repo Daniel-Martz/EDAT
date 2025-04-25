@@ -115,6 +115,22 @@ int search_queue_print(FILE *fp, const SearchQueue *q)
     if (fp == NULL || q == NULL || q->data == NULL)
     {
         return -1;
-    }   
+    }
     return tree_inOrder(fp, q->data);
+}
+
+void *search_queue_popBack(SearchQueue *q)
+{
+    void *e = NULL;
+    if (q == NULL)
+    {
+        return NULL;
+    }
+
+    e = tree_find_max(q->data);
+    if (e != NULL)
+    {
+        tree_remove(q->data, e);
+    }
+    return e;
 }

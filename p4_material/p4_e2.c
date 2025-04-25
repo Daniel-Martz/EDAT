@@ -45,22 +45,16 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    while (fgets(frase, TAM, entrada))
+    p = fgets(frase, TAM, entrada);
+    search_queue_push(s, p);
+
+    while (p != NULL)
     {
-        frase[strlen(frase)] = '\0';
-        if (frase[0] != '\0')
-        {
-            p = str2str(frase);
-            search_queue_push(s, p);
-        }
+        p = fgets(frase, TAM, entrada);
+        search_queue_push(s, p);
     }
 
-    while (!search_queue_isEmpty(s))
-    {
-        linea = (char *)search_queue_pop(s);
-
-        fprintf(salida, "%s\n", linea);
-    }
+    search_queue_print(salida, s);
 
     search_queue_free(s);
 
@@ -68,4 +62,3 @@ int main(int argc, char **argv)
     fclose(salida);
     return 0;
 }
-
