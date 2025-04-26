@@ -9,14 +9,11 @@
 #include "search_queue.h"
 #include "file_utils.h"
 
-#define TAM 50
 
 int main(int argc, char **argv)
 {
-    FILE *entrada = NULL, *salida = NULL;
-    char frase[TAM];
-    char *linea = NULL, *p = NULL;
-    SearchQueue *s = NULL;
+    FILE *salida = NULL;
+    SearchQueue *s_queue = NULL;
     P_ele_print print = string_print;
     P_ele_cmp cmp = string_cmp;
 
@@ -26,39 +23,30 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    if (!(entrada = fopen(argv[1], "r")))
-    {
-        return -1;
-    }
-
     if (!(salida = fopen(argv[2], "w")))
     {
-        fclose(entrada);
         return -1;
     }
 
-    s = search_queue_new(print, cmp);
-    if (s == NULL)
+    s_queue = search_queue_new(print, cmp);
+    if (s_queue == NULL)
     {
-        fclose(entrada);
+        printf("1");
+        fclose(salida);
+        return -1;
+    }
+    if (read_tad_from_file((void*)s_queue, argv[1], str2str, (tad_insert)search_queue_push, (tad_isEmpty)search_queue_isEmpty) == ERROR)
+    {
+        printf("2");
+        search_queue_free(s_queue);
         fclose(salida);
         return -1;
     }
 
-    p = fgets(frase, TAM, entrada);
-    search_queue_push(s, p);
+    search_queue_print(salida, s_queue);
 
-    while (p != NULL)
-    {
-        p = fgets(frase, TAM, entrada);
-        search_queue_push(s, p);
-    }
+    search_queue_free(s_queue);
 
-    search_queue_print(salida, s);
-
-    search_queue_free(s);
-
-    fclose(entrada);
     fclose(salida);
     return 0;
 }

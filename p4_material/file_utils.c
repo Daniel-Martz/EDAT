@@ -246,8 +246,7 @@ Bool _w_main_stack_isEmpty (const void *tad) {
  a = read_tad_from_file (stack, int2string, _w_stack_push, w_stack_isEmpty);
  *
  **/
-Status read_tad_from_file(void *tad, char *filename, elem_from_string convert,
-                          tad_insert f_insert, tad_isEmpty f_isEmpty) {
+Status read_tad_from_file(void *tad, char *filename, elem_from_string convert, tad_insert f_insert, tad_isEmpty f_isEmpty) {
 
   FILE *fp;
   char buffer[BUFFER_SIZE];
