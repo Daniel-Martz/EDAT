@@ -12,6 +12,16 @@ run_e1: p4_e1
 	./p4_e1 $(DATA)/data_vertex_50K.txt "id:889907 tag:Golf_de_Ibiza" normal
 	@echo ""
 	./p4_e1 $(DATA)/data_vertex_50K.txt "id:889907 tag:Golf_de_Ibiza" sorted
+
+run_e1_2: p4_e1
+	./p4_e1 $(DATA)/data_vertex_1K.txt "id:88997 tag:Golf_de_Ibiza" normal
+	@echo ""
+	./p4_e1 $(DATA)/data_vertex_10.txt "id:88997 tag:Golf_de_Ibiza" sorted
+	@echo ""
+	./p4_e1 $(DATA)/data_vertex_10K.txt "id:889907 tag:Golf_de_Ibiza" normal
+	@echo ""
+	./p4_e1 $(DATA)/data_vertex_10rep.txt "id:889907 tag:Golf_de_Ibiza" sorted
+
 run_e1v: p4_e1
 	valgrind --leak-check=full ./p4_e1 $(DATA)/data_vertex_50K.txt "id:88997 tag:Golf_de_Ibiza" normal
 	@echo ""
@@ -34,5 +44,8 @@ run_e2v: p4_e2
 
 run_e3: p4_e3
 	./p4_e3 grades.txt
+
+run_e3v: p4_e3
+	valgrind --leak-check=full ./p4_e3 grades.txt
 
 # Remaining rules must be in main Makefile.

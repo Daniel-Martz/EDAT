@@ -112,4 +112,6 @@ size_t search_queue_size(const SearchQueue *q);
  *  */
 int search_queue_print(FILE *fp, const SearchQueue *q);
 
+void *search_queue_popBack(SearchQueue *q);
+
 #endif

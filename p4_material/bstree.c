@@ -136,18 +136,18 @@ BSTNode *_bst_find_min_rec(BSTNode *pn) {
 BSTNode *_bst_find_max_rec(BSTNode *pn) {
   if(!pn) return NULL;
   if(!pn->right) return pn;
-  return _bst_find_min_rec(pn->right);
+  return _bst_find_max_rec(pn->right);
 }
 
 Bool _bst_contains_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
   int cmp_result = 0;
 
   if(!pn) return FALSE;
-  cmp_result = cmp_elem(pn->info, elem);
+  cmp_result = cmp_elem(elem, pn->info);
 
   if(!cmp_result) return TRUE;
   else if(cmp_result < 0){
-    return _bst_contains_rec(pn->right, elem, cmp_elem);
+    return _bst_contains_rec(pn->left, elem, cmp_elem);
   }
   else{
     return _bst_contains_rec(pn->right, elem, cmp_elem);
@@ -158,12 +158,13 @@ BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
   int cmp_result = 0;
 
   if(!pn){
-    pn = _bst_node_new();
-    if(!pn) return NULL;
+    if(!(pn = _bst_node_new())){
+      return NULL;
+    }
     pn->info = (void*)elem;
     return pn;
   }
-  cmp_result = cmp_elem(pn->info, elem);
+  cmp_result = cmp_elem(elem, pn->info);
   if(!cmp_result) return NULL;
   else if(cmp_result>0){
     pn->right = _bst_insert_rec(pn->right, elem, cmp_elem);
@@ -180,7 +181,7 @@ BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
 
   if(!pn) return NULL;
 
-  if(!(cmp_result = cmp_elem(pn->info, elem))){
+  if(!(cmp_result = cmp_elem(elem, pn->info))){
     
     if(!pn->right && !pn->left){
       _bst_node_free(pn);
