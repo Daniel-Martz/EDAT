@@ -26,7 +26,7 @@ int main(int argc, const char **argv)
     int nums = 0, i;
     SearchQueue *s = NULL, *s_aux = NULL;
     FILE *f = NULL;
-    float *e_aux = NULL, media = 0, mediana = 0, sum = 0, lowest_aux[TAM], highest_aux[TAM];
+    float *e_aux = NULL, media = 0, mediana = 0, sum = 0, lowest_aux[TAM], highest_aux[TAM], **elements = NULL;
 
     if (argc < 1)
     {
@@ -57,6 +57,13 @@ int main(int argc, const char **argv)
     fscanf(f, "%i", &nums);
     fgetc(f);
 
+    if(!(elements = (float**)calloc(nums, sizeof(float*)))){
+        fclose(f);
+        search_queue_free(s);
+        search_queue_free(s_aux);
+        return -1;
+    }
+
     for (i = 0; i < nums; i++)
     {
         e_aux = NULL;
@@ -71,6 +78,8 @@ int main(int argc, const char **argv)
         
         fscanf(f,"%f", &(*e_aux));
         search_queue_push(s, (void*)e_aux);
+        search_queue_push(s_aux, (void*)e_aux);
+        elements[i] = e_aux;
     }
 
     fprintf(stdout, "Ordered grades: ");
@@ -87,7 +96,6 @@ int main(int argc, const char **argv)
                 lowest_aux[i] = *e_aux;
             }
             sum += *e_aux;
-            search_queue_push(s_aux, (void*)e_aux);
         }
     }
     else{
@@ -104,7 +112,6 @@ int main(int argc, const char **argv)
                 lowest_aux[i] = *e_aux;
             }
             sum += *e_aux;
-            search_queue_push(s_aux, (void*)e_aux);
         }
     }
 
@@ -112,7 +119,6 @@ int main(int argc, const char **argv)
     for(i = 0; i<TAM; i++){
         e_aux = search_queue_popBack(s_aux);
         highest_aux[i] = *e_aux;
-        free(e_aux);
     }
     
     media = sum/nums;
@@ -131,7 +137,13 @@ int main(int argc, const char **argv)
     }
     
     fclose(f);
+
+    for (i = 0; i < nums; i++) {
+        free(elements[i]);
+    }
+    free(elements);
+    
     search_queue_free(s);
     search_queue_free(s_aux);
-    
+    return 0;
 }

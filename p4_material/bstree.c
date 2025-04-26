@@ -184,11 +184,13 @@ BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
   if(!(cmp_result = cmp_elem(elem, pn->info))){
     
     if(!pn->right && !pn->left){
+      pn->info = NULL;
       _bst_node_free(pn);
       return NULL;
     }
     else if(!pn->right){
       aux = pn->left;
+      pn->info = NULL;
       _bst_node_free(pn);
       return aux;
     }
