@@ -13,8 +13,8 @@
 
 int main(int argc, const char **argv)
 {
-    int nums = 0, i;
-    SearchQueue *s = NULL, *s_aux = NULL;
+    int nums = 0, i, num_res = 0;
+    SearchQueue *s = NULL;
     FILE *f = NULL;
     float *e_aux = NULL, media = 0, mediana = 0, sum = 0, lowest_aux[TAM], highest_aux[TAM], **elements = NULL;
 
@@ -24,33 +24,35 @@ int main(int argc, const char **argv)
         return -1;
     }
 
+
     if (!(f = fopen(argv[1], "r")))
     {
+        fprintf(stderr, "No fue posible abrir el archivo %s ", argv[1]);
         return -1;
     }
 
     s = search_queue_new(float_print, float_cmp);
     if (s == NULL)
     {
+        fprintf(stderr, "Hubo un problema iniciando la cola");
         fclose(f);
-        return -1;
-    }
-
-    s_aux = search_queue_new(float_print, float_cmp);
-    if (s_aux == NULL)
-    {
-        fclose(f);
-        search_queue_free(s);
         return -1;
     }
 
     fscanf(f, "%i", &nums);
     fgetc(f);
 
-    if(!(elements = (float**)calloc(nums, sizeof(float*)))){
+    if(nums<=0){
+        fprintf(stderr, "El numero de elementos (%i) ndicado en el archivo no es válido", nums);
         fclose(f);
         search_queue_free(s);
-        search_queue_free(s_aux);
+        return -1;
+    }
+
+    if(!(elements = (float**)calloc(nums, sizeof(float*)))){
+        fprintf(stderr, "Hubo un problema iniciando el array de elementos");
+        fclose(f);
+        search_queue_free(s);
         return -1;
     }
 
@@ -62,78 +64,108 @@ int main(int argc, const char **argv)
         {
             fclose(f); 
             search_queue_free(s);
-            search_queue_free(s_aux);
+            fprintf(stderr, "Hubo un problema reservando memoria para los elementos");
             return -1;
         }
         
         fscanf(f,"%f", &(*e_aux));
-        search_queue_push(s, (void*)e_aux);
-        search_queue_push(s_aux, (void*)e_aux);
+        if(search_queue_push(s, e_aux) == ERROR){
+            fprintf(stderr, "There was an error pushing a queue element");
+            return -1;
+        }
         elements[i] = e_aux;
     }
 
     fprintf(stdout, "Ordered grades: ");
     search_queue_print(stdout, s);
 
+
+    
     if(nums%2){
         for(i = 0; i< nums; i++){
             e_aux = search_queue_pop(s);
             if(i == (nums/2)){
                 mediana = *e_aux;
             }
-
-            if(i == 0 || i == 1 || i == 2){
+            if(i==0 || i==1 || i==2){
                 lowest_aux[i] = *e_aux;
             }
-            sum += *e_aux;
+            
+            sum += *elements[i];
+            if(search_queue_push(s, e_aux) == ERROR){
+                fprintf(stderr, "There was an error pushing a queue element");
+                return -1;
+            }
         }
     }
     else{
+
         for(i = 0; i< nums; i++){
-            e_aux = search_queue_pop(s);
-            if(i == ((nums/2) -1)){
+            if(!(e_aux = search_queue_pop(s))){
+                fprintf(stderr, "There was an error extracting a queue element");
+                return -1;
+            }
+            if(i == ((nums/2)-1)){
                 mediana = *e_aux;
             }
             if(i == (nums/2)){
                 mediana += *e_aux;
                 mediana /= 2;
             }
-            if(i == 0 || i == 1 || i == 2){
+            if(i==0 || i==1 || i==2){
                 lowest_aux[i] = *e_aux;
             }
-            sum += *e_aux;
+            else if(i>=nums/2){
+                if(search_queue_push(s, e_aux) == ERROR){
+                    fprintf(stderr, "There was an error pushing a queue element");
+                    return -1;
+                }
+            }
+            sum += *elements[i];
         }
     }
+    num_res = nums - TAM;
 
-    
-    for(i = 0; i<TAM; i++){
-        e_aux = search_queue_popBack(s_aux);
+    if(num_res < 0){
+        num_res = 0;
+    }
+
+    if(num_res > 3){
+        num_res = 3;
+    }
+
+    for(i = 0; i<num_res; i++){
+        if(!(e_aux = search_queue_popBack(s))){
+            fprintf(stderr, "There was an error extracting a queue element");
+            return -1;
+        }
         highest_aux[i] = *e_aux;
     }
-    
+        
     media = sum/nums;
     
     fprintf(stdout, "Mean: %.2f\n", media);
     fprintf(stdout, "Median: %.2f\n", mediana);
-    
+        
     fprintf(stdout, "Lowest grades: ");
     for(i=0; i<TAM; i++){
         fprintf(stdout, "%.2f ", lowest_aux[i]);
     }
-    
+    if(num_res == 0){
+        fprintf(stdout, "\nThere aren`t more numbers ");
+    }
     fprintf(stdout, "\nHighest grades: ");
-    for(i=0; i<TAM; i++){
+    for(i=0; i<num_res; i++){
         fprintf(stdout, "%.2f ", highest_aux[i]);
     }
-    
-    fclose(f);
 
-    for (i = 0; i < nums; i++) {
+    fclose(f);
+    
+    search_queue_free(s);
+
+    for(i = 0; i < nums; i++) {
         free(elements[i]);
     }
     free(elements);
-    
-    search_queue_free(s);
-    search_queue_free(s_aux);
     return 0;
 }

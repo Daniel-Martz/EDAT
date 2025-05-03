@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -ansi -pedantic
+CFLAGS = -Wall -ansi -pedantic -g
 OBJS_A = p4_e1.o vertex.o bstree.o
 OBJS_B = p4_e2.o vertex.o bstree.o search_queue.o file_utils.o
 OBJS_C = p4_e3.o vertex.o bstree.o search_queue.o file_utils.o

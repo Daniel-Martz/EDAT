@@ -68,8 +68,11 @@ Status search_queue_push(SearchQueue *q, void *ele)
 void *search_queue_pop(SearchQueue *q)
 {
     void *e = NULL;
-    if (q == NULL)
+    if (q == NULL || q->data == NULL)
     {
+        return NULL;
+    }
+    if(tree_isEmpty(q->data) == TRUE){
         return NULL;
     }
 
@@ -122,8 +125,11 @@ int search_queue_print(FILE *fp, const SearchQueue *q)
 void *search_queue_popBack(SearchQueue *q)
 {
     void *e = NULL;
-    if (q == NULL)
+    if (q == NULL || q->data == NULL)
     {
+        return NULL;
+    }
+    if(tree_isEmpty(q->data) == TRUE){
         return NULL;
     }
 

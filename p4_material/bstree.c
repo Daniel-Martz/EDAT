@@ -41,6 +41,7 @@ void _bst_node_free(BSTNode *pn) {
   }
 
   free(pn);
+  return;
 }
 
 void _bst_node_free_rec(BSTNode *pn) {
@@ -177,6 +178,7 @@ BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
 
 BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
   int cmp_result = 0;
+  void *info_to_remove = NULL;
   BSTNode *aux = NULL;
 
   if(!pn) return NULL;
@@ -184,25 +186,24 @@ BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
   if(!(cmp_result = cmp_elem(elem, pn->info))){
     
     if(!pn->right && !pn->left){
-      pn->info = NULL;
       _bst_node_free(pn);
       return NULL;
     }
-    else if(!pn->right){
+    else if(!pn->right && pn->left){
       aux = pn->left;
-      pn->info = NULL;
       _bst_node_free(pn);
       return aux;
     }
-    else if(!pn->left){
+    else if(!pn->left && pn->right){
       aux = pn->right;
       _bst_node_free(pn);
       return aux;
     }
     else{
       aux = _bst_find_min_rec(pn->right);
+      info_to_remove = aux->info;
       pn->info = aux->info;
-      pn->right = _bst_remove_rec(pn->right, aux->info,cmp_elem);
+      pn->right = _bst_remove_rec(pn->right, info_to_remove,cmp_elem);
       return pn;
     }
   }
@@ -240,8 +241,10 @@ void tree_destroy(BSTree *tree) {
     return;
   }
 
-  _bst_node_free_rec(tree->root);
-  free(tree);
+  if(tree->root != NULL){
+    _bst_node_free_rec(tree->root);
+    free(tree);
+  }
 
   return;
 }
