@@ -9,6 +9,27 @@
 #include "search_queue.h"
 #include "file_utils.h"
 
+void free_elements(SearchQueue *s)
+{
+    void *e_aux = NULL;
+
+    if (!s)
+        return;
+
+    
+    while (search_queue_isEmpty(s) == FALSE)
+    {   
+        e_aux = search_queue_pop(s);
+        
+        if (e_aux)
+        {
+        
+            free((char*)e_aux);  
+        }
+    }
+}
+
+
 
 int main(int argc, char **argv)
 {
@@ -31,13 +52,12 @@ int main(int argc, char **argv)
     s_queue = search_queue_new(print, cmp);
     if (s_queue == NULL)
     {
-        printf("1");
         fclose(salida);
         return -1;
     }
-    if (read_tad_from_file((void*)s_queue, argv[1], str2str, (tad_insert)search_queue_push, (tad_isEmpty)search_queue_isEmpty) == ERROR)
+
+    if (read_tad_from_file((void *)s_queue, argv[1], (elem_from_string)str2str, (tad_insert)search_queue_push, (tad_isEmpty)search_queue_isEmpty) == ERROR)
     {
-        printf("2");
         search_queue_free(s_queue);
         fclose(salida);
         return -1;
@@ -45,6 +65,7 @@ int main(int argc, char **argv)
 
     search_queue_print(salida, s_queue);
 
+    free_elements(s_queue);
     search_queue_free(s_queue);
 
     fclose(salida);
