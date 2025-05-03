@@ -11,16 +11,6 @@
 
 #define TAM 3
 
-void free_elements(SearchQueue *s){
-    void *e_aux = NULL;
-    if(!s) return;
-
-    while(search_queue_isEmpty(s) == FALSE){
-        e_aux = search_queue_pop(s);
-        free((float*)e_aux);
-    }
-}
-
 int main(int argc, const char **argv)
 {
     int nums = 0, i;
