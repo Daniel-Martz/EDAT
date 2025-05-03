@@ -9,11 +9,13 @@
 #define BUFFER_SIZE 512
 
 
-int *int_init(int a) {
+int *int_init(int a)
+{
   int *r = NULL;
 
   r = (int *)malloc(sizeof(int));
-  if (!r) {
+  if (!r)
+  {
     fprintf(stderr, "%s", strerror(errno));
     return NULL;
   }
@@ -21,14 +23,16 @@ int *int_init(int a) {
   return r;
 }
 
-int int_cmp(const void *c1, const void *c2) {
+int int_cmp(const void *c1, const void *c2)
+{
   if (!c1 || !c2)
     return 0;
 
   return (*(int *)c1 - *(int *)c2);
 }
 
-void *int_copy(const void *a) {
+void *int_copy(const void *a)
+{
   int *c = NULL;
 
   if (!a)
@@ -42,12 +46,13 @@ void int_free(void *a) { free((int *)a); }
 
 int int_print(FILE *pf, const void *a) { return fprintf(pf, "%d", *(int *)a); }
 
-
-char *char_init(char a) {
+char *char_init(char a)
+{
   char *r = NULL;
 
   r = (char *)malloc(sizeof(char));
-  if (!r) {
+  if (!r)
+  {
     fprintf(stderr, "%s", strerror(errno));
     return NULL;
   }
@@ -55,7 +60,8 @@ char *char_init(char a) {
   return r;
 }
 
-void *char_copy(const void *a) {
+void *char_copy(const void *a)
+{
   char *c = NULL;
 
   if (!a)
@@ -65,7 +71,8 @@ void *char_copy(const void *a) {
   return (void *)c;
 }
 
-int char_cmp(const void *c1, const void *c2) {
+int char_cmp(const void *c1, const void *c2)
+{
   if (!c1 || !c2)
     return 0;
 
@@ -74,7 +81,8 @@ int char_cmp(const void *c1, const void *c2) {
 
 void char_free(void *a) { free((char *)a); }
 
-int char_print(FILE *pf, const void *a) {
+int char_print(FILE *pf, const void *a)
+{
   if (!pf || !a)
     return -1;
 
@@ -82,11 +90,13 @@ int char_print(FILE *pf, const void *a) {
 }
 
 
-float *float_init(float a) {
+float *float_init(float a)
+{
   float *r = NULL;
 
   r = (float *)malloc(sizeof(float));
-  if (!r) {
+  if (!r)
+  {
     fprintf(stderr, "%s", strerror(errno));
     return NULL;
   }
@@ -94,7 +104,8 @@ float *float_init(float a) {
   return r;
 }
 
-void *float_copy(const void *a) {
+void *float_copy(const void *a)
+{
   float *c = NULL;
 
   if (!a)
@@ -104,7 +115,8 @@ void *float_copy(const void *a) {
   return (void *)c;
 }
 
-int float_cmp(const void *c1, const void *c2) {
+int float_cmp(const void *c1, const void *c2)
+{
   if (!c1 || !c2)
     return 0;
   if (*(float *)c1 > *(float *)c2)
@@ -117,25 +129,28 @@ int float_cmp(const void *c1, const void *c2) {
 
 void float_free(void *a) { free((float *)a); }
 
-int float_print(FILE *pf, const void *a) {
+int float_print(FILE *pf, const void *a)
+{
   if (!pf || !a)
     return -1;
-  return fprintf(pf, "%.2f ", *(float *)a);
+  return fprintf(pf, "%f", *(float *)a);
 }
 
 
 void *string_copy(const void *src) { return strdup(src); }
 
-int string_cmp(const void *c1, const void *c2) {
+int string_cmp(const void *c1, const void *c2)
+{
   if (!c1 || !c2)
     return 0;
 
-  return (strcmp(*(char **)c1, *(char **)c2));
+  return (strcmp((char *)c1, (char *)c2));
 }
 
 void string_free(void *src) { free((char *)src); }
 
-int string_print(FILE *pf, const void *src) {
+int string_print(FILE *pf, const void *src)
+{
   if (!pf || !src)
     return -1;
   return fprintf(pf, "%s", (char *)src);
@@ -146,7 +161,8 @@ int string_print(FILE *pf, const void *src) {
  * error handling as in
  * https://wiki.sei.cmu.edu/confluence/display/c/ERR34-C.+Detect+errors+when+converting+a+string+to+a+number
  **/
-void *str2int(const char *str) {
+void *str2int(const char *str)
+{
   char *end;
   int *si = malloc(sizeof(int));
 
@@ -156,17 +172,28 @@ void *str2int(const char *str) {
   errno = 0;
   const long sl = strtol(str, &end, 10);
 
-  if (end == str) {
+  if (end == str)
+  {
     fprintf(stderr, "%s: not a decimal number\n", str);
-  } else if ('\0' != *end) {
+  }
+  else if ('\0' != *end)
+  {
     fprintf(stderr, "%s: extra characters at end of input: %s\n", str, end);
-  } else if ((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno) {
+  }
+  else if ((LONG_MIN == sl || LONG_MAX == sl) && ERANGE == errno)
+  {
     fprintf(stderr, "%s out of range of type long\n", str);
-  } else if (sl > INT_MAX) {
+  }
+  else if (sl > INT_MAX)
+  {
     fprintf(stderr, "%ld greater than INT_MAX\n", sl);
-  } else if (sl < INT_MIN) {
+  }
+  else if (sl < INT_MIN)
+  {
     fprintf(stderr, "%ld less than INT_MIN\n", sl);
-  } else {
+  }
+  else
+  {
     *si = (int)sl;
     return si;
   }
@@ -179,7 +206,8 @@ void *str2int(const char *str) {
 void *str2str(const char *str) { return strdup(str); }
 
 /* convert string to char pointer */
-void *str2chr(const char *str) {
+void *str2chr(const char *str)
+{
   char *c = malloc(sizeof(char));
   if (!c)
     return NULL;
@@ -191,7 +219,8 @@ void *str2chr(const char *str) {
  *
  * If error return NULL and print message in stderror
  */
-void *str2float(const char *str) {
+void *str2float(const char *str)
+{
   char *endptr;
   float *f;
 
@@ -201,7 +230,8 @@ void *str2float(const char *str) {
 
   *f = strtof(str, &endptr);
 
-  if (endptr != NULL) {
+  if (endptr != NULL)
+  {
     fprintf(stderr, "%s: not a float number\n", str);
     free(f);
     f = NULL;
@@ -210,20 +240,20 @@ void *str2float(const char *str) {
   return f;
 }
 
-
-
 /* read line from file and strip newline */
 /* note it doesn't strip any additional whitespace */
-int read_line(FILE *fp, char *buffer) {
+int read_line(FILE *fp, char *buffer)
+{
   int len;
-  if (fgets(buffer, BUFFER_SIZE, fp)) {
+  if (fgets(buffer, BUFFER_SIZE, fp))
+  {
     len = strlen(buffer);
     if (buffer[len - 1] == '\n')
-      buffer[--len] = '\0'; 
+      buffer[--len] = '\0';
     if (buffer[len - 1] == '\r')
-      buffer[--len] = '\0'; 
-    
-    return len; 
+      buffer[--len] = '\0';
+
+    return len;
   }
   return 0;
 }
@@ -246,25 +276,30 @@ Bool _w_main_stack_isEmpty (const void *tad) {
  a = read_tad_from_file (stack, int2string, _w_stack_push, w_stack_isEmpty);
  *
  **/
-Status read_tad_from_file(void *tad, char *filename, elem_from_string convert, tad_insert f_insert, tad_isEmpty f_isEmpty) {
+Status read_tad_from_file(void *tad, char *filename, elem_from_string convert,
+                          tad_insert f_insert, tad_isEmpty f_isEmpty)
+{
 
   FILE *fp;
   char buffer[BUFFER_SIZE];
   void *elem = NULL;
   Status ret = OK;
 
-  if (!tad || !f_isEmpty(tad)) {
+  if (!tad || !f_isEmpty(tad))
+  {
     printf("Something's wrong with the tree\n");
     return ERROR;
   }
 
   fp = fopen(filename, "r");
-  if (!fp) {
+  if (!fp)
+  {
     printf("Error opening %s\n", filename);
     return ERROR;
   }
 
-  while (read_line(fp, buffer) && ret == OK) {
+  while (read_line(fp, buffer) && ret == OK)
+  {
     elem = convert(buffer);
     ret = f_insert(tad, elem);
   }
