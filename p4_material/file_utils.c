@@ -6,7 +6,7 @@
 
 #include "file_utils.h"
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 1024
 
 
 int *int_init(int a)
@@ -153,7 +153,7 @@ int string_print(FILE *pf, const void *src)
 {
   if (!pf || !src)
     return -1;
-  return fprintf(pf, "%s", (char *)src);
+  return fprintf(pf, "%s\n", (char *)src);
 }
 
 /**  Convert string to integer pointer

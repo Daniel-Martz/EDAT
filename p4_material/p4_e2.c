@@ -9,27 +9,6 @@
 #include "search_queue.h"
 #include "file_utils.h"
 
-void free_elements(SearchQueue *s)
-{
-    void *e_aux = NULL;
-
-    if (!s)
-        return;
-
-    
-    while (search_queue_isEmpty(s) == FALSE)
-    {   
-        e_aux = search_queue_pop(s);
-        
-        if (e_aux)
-        {
-        
-            free((char*)e_aux);  
-        }
-    }
-}
-
-
 
 int main(int argc, char **argv)
 {
@@ -45,29 +24,38 @@ int main(int argc, char **argv)
     }
 
     if (!(salida = fopen(argv[2], "w")))
-    {
+    { 
+        fprintf(stderr, "Error: No se pudo abrir el fichero de salida: %s\n", argv[2]);
         return -1;
     }
 
     s_queue = search_queue_new(print, cmp);
     if (s_queue == NULL)
     {
+        fprintf(stderr, "Error: No se pudo crear la cola de búsqueda.\n");
         fclose(salida);
         return -1;
     }
 
     if (read_tad_from_file((void *)s_queue, argv[1], (elem_from_string)str2str, (tad_insert)search_queue_push, (tad_isEmpty)search_queue_isEmpty) == ERROR)
     {
-        search_queue_free(s_queue);
+        fprintf(stderr, "Error: No se pudo leer el TAD desde el fichero de entrada: %s\n", argv[1]);
+        search_queue_free_and_elements(s_queue);
         fclose(salida);
         return -1;
     }
 
-    search_queue_print(salida, s_queue);
+    if (search_queue_print(salida, s_queue) < 0)
+    {
+        fprintf(stderr, "Error: No se pudo imprimir la cola de búsqueda en el fichero de salida.\n");
+        search_queue_free_and_elements(s_queue);
+        fclose(salida);
+        return -1;
+    }
 
-    free_elements(s_queue);
-    search_queue_free(s_queue);
-
+    search_queue_free_and_elements(s_queue);
     fclose(salida);
     return 0;
 }
+
+  

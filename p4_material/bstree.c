@@ -56,6 +56,20 @@ void _bst_node_free_rec(BSTNode *pn) {
   return;
 }
 
+
+void _bst_node_free_rec_and_elements(BSTNode *pn) {
+  if (!pn) {
+    return;
+  }
+
+  _bst_node_free_rec_and_elements(pn->left);
+  _bst_node_free_rec_and_elements(pn->right);
+  free(pn->info);
+  _bst_node_free(pn);
+
+  return;
+}
+
 int _bst_depth_rec(BSTNode *pn) {
   int depth_l, depth_r;
 
@@ -405,4 +419,17 @@ Status tree_remove(BSTree *tree, const void *elem) {
 
   tree->root = root;
   return OK;
+}
+
+
+void tree_destroy_and_elements(BSTree *tree)
+{
+  if (!tree) {
+    return;
+  }
+
+  if(tree->root != NULL){
+    _bst_node_free_rec_and_elements(tree->root);
+    free(tree);
+  } 
 }
