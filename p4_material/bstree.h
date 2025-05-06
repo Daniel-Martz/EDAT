@@ -179,7 +179,7 @@ Status tree_insert(BSTree *tree, const void *elem);
 Status tree_remove(BSTree *tree, const void *elem);
 
 
-void tree_destroy_and_elements(BSTree *tree);
+
 
 
 #endif

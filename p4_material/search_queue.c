@@ -141,13 +141,3 @@ void *search_queue_popBack(SearchQueue *q)
     return e;
 }
 
-void search_queue_free_and_elements(SearchQueue *q)
-{
-    if (q == NULL)
-    {
-        return;
-    }
-    tree_destroy_and_elements(q->data);
-    free(q);
-    return;
-}
