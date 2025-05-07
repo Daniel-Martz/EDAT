@@ -114,4 +114,5 @@ int search_queue_print(FILE *fp, const SearchQueue *q);
 
 void *search_queue_popBack(SearchQueue *q);
 
+
 #endif
