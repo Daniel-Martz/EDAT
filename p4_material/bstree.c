@@ -22,7 +22,6 @@ struct _BSTree {
 /*** BSTNode TAD private functions ***/
 BSTNode *_bst_node_new() {
   BSTNode *pn = NULL;
-
   pn = malloc(sizeof(BSTNode));
   if (!pn) {
     return NULL;
