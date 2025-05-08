@@ -447,7 +447,7 @@ Status tree_insert(BSTree *tree, const void *elem)
     return ERROR;
   if (!tree->cmp_ele)
     return ERROR;
-  if (tree_contains(tree, elem) == OK)
+  if (tree_contains(tree, elem) == TRUE)
   {
     return OK;
   }
